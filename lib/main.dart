@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:shop_app/screens/product_detail_screen.dart';
 import './screens/products_overview_screen.dart';
 
 void main() {
@@ -15,15 +16,32 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'Flutter Demo',
       theme: ThemeData(
-        primarySwatch: Colors.blue,
+        primarySwatch: Colors.purple,
+        colorScheme: ColorScheme(
+          brightness: Brightness.light,
+          primary: Colors.purple,
+          onPrimary: Colors.purpleAccent,
+          secondary: Colors.deepOrange,
+          onSecondary: Colors.orange,
+          error: Colors.red,
+          onError: Colors.redAccent,
+          background: Colors.white,
+          onBackground: Colors.white10,
+          surface: Colors.white,
+          onSurface: Colors.white10,
+        ),
+        fontFamily: 'Lato',
       ),
       home: ProductsOverviewScreen(),
+      routes: {
+        ProductDetailScreen.routename: (ctx) => ProductDetailScreen(),
+      },
     );
   }
 }
 
 class MyHomePage extends StatelessWidget {
-  const MyHomePage({Key? key}) : super(key: key);
+  MyHomePage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
