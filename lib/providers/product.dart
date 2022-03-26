@@ -1,4 +1,6 @@
-class Product {
+import 'package:flutter/Material.dart';
+
+class Product with ChangeNotifier {
   final String id;
   final String title;
   final String description;
@@ -14,4 +16,9 @@ class Product {
     required this.imageUrl,
     this.isfavorite = false,
   });
+
+  void toggleFavoriteStatus() {
+    isfavorite = !isfavorite;
+    notifyListeners();
+  }
 }
