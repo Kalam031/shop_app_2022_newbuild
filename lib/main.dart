@@ -3,7 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:shop_app/providers/orders.dart';
 import 'package:shop_app/screens/cart_screen.dart';
 import 'package:shop_app/screens/orders_screen.dart';
-import 'package:shop_app/widgets/app_drawer.dart';
+import 'package:shop_app/screens/user_products_screen.dart';
 
 import './providers/cart.dart';
 import './providers/products.dart';
@@ -15,8 +15,6 @@ void main() {
 }
 
 class MyApp extends StatelessWidget {
-  MyApp({Key? key}) : super(key: key);
-
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
@@ -35,7 +33,7 @@ class MyApp extends StatelessWidget {
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
         title: 'Flutter Demo',
-        theme: ThemeData(
+        /* theme: ThemeData(
           primarySwatch: Colors.purple,
           colorScheme: ColorScheme(
             brightness: Brightness.light,
@@ -45,18 +43,19 @@ class MyApp extends StatelessWidget {
             onSecondary: Colors.orange,
             error: Colors.red,
             onError: Colors.redAccent,
-            background: Colors.white,
-            onBackground: Colors.white10,
-            surface: Colors.white,
-            onSurface: Colors.white10,
+            background: Colors.pinkAccent,
+            onBackground: Colors.pinkAccent,
+            surface: Colors.pinkAccent,
+            onSurface: Colors.pinkAccent,
           ),
           fontFamily: 'Lato',
-        ),
+        ), */
         home: ProductsOverviewScreen(),
         routes: {
           ProductDetailScreen.routename: (ctx) => ProductDetailScreen(),
           CartScreen.routeName: (ctx) => CartScreen(),
           OrdersScreen.routeName: (ctx) => OrdersScreen(),
+          UserProductsScreen.routeName: (ctx) => UserProductsScreen(),
         },
       ),
     );
@@ -73,7 +72,17 @@ class MyHomePage extends StatelessWidget {
         title: Text('MyShop'),
       ),
       body: Center(
-        child: Text('Let\'s build a shop.'),
+        child: IconButton(
+          icon: Icon(Icons.card_travel),
+          onPressed: () {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text('Hi there'),
+                //duration: Duration(seconds: 2),
+              ),
+            );
+          },
+        ),
       ),
     );
   }
