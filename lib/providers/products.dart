@@ -5,8 +5,8 @@ import 'product.dart';
 import 'package:http/http.dart' as http;
 
 class Products with ChangeNotifier {
-  final List<Product> _items = [
-    Product(
+  List<Product> _items = [
+/*     Product(
       id: 'p1',
       title: 'Red Shirt',
       description: 'A red shirt - it is pretty red!',
@@ -37,7 +37,7 @@ class Products with ChangeNotifier {
       price: 49.99,
       imageUrl:
           'https://upload.wikimedia.org/wikipedia/commons/thumb/1/14/Cast-Iron-Pan.jpg/1024px-Cast-Iron-Pan.jpg',
-    ),
+    ), */
   ];
 
   // ignore: prefer_final_fields
@@ -68,8 +68,34 @@ class Products with ChangeNotifier {
     return _items.firstWhere((prod) => prod.id == id);
   }
 
+  Future<void> FetchAndSetProducts() async {
+    const url =
+        'https://shopapp-77183-default-rtdb.firebaseio.com/products.json';
+
+    try {
+      final response = await http.get(Uri.parse(url));
+      final extractedData = json.decode(response.body) as Map<String, dynamic>;
+      final List<Product> loadedProduct = [];
+      extractedData.forEach((prodId, prodData) {
+        loadedProduct.add(Product(
+          id: prodId,
+          title: prodData['title'],
+          description: prodData['description'],
+          price: prodData['price'],
+          imageUrl: prodData['imageUrl'],
+          isfavorite: prodData['isFavorite'],
+        ));
+      });
+      _items = loadedProduct;
+      notifyListeners();
+    } catch (error) {
+      throw (error);
+    }
+  }
+
   Future<void> addProduct(Product product) async {
-    const url = 'https://shopapp-77183-default-rtdb.firebaseio.com/products';
+    const url =
+        'https://shopapp-77183-default-rtdb.firebaseio.com/products.json';
 
     try {
       final response = await http.post(
