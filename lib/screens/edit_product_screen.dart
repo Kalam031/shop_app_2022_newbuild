@@ -23,7 +23,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
     'title': '',
     'description': '',
     'price': '',
-    'imageurl': '',
+    'imageUrl': '',
   };
 
   @override
