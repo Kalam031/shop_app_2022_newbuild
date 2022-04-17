@@ -123,7 +123,7 @@ class Products with ChangeNotifier {
       _items.add(newProduct);
       notifyListeners();
     } catch (error) {
-      throw (error);
+      rethrow;
     }
   }
 

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shop_app/providers/orders.dart';
+import 'package:shop_app/screens/auth_screen.dart';
 import 'package:shop_app/screens/cart_screen.dart';
 import 'package:shop_app/screens/edit_product_screen.dart';
 import 'package:shop_app/screens/orders_screen.dart';
@@ -34,7 +35,7 @@ class MyApp extends StatelessWidget {
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
         title: 'Flutter Demo',
-        /* theme: ThemeData(
+        theme: ThemeData(
           primarySwatch: Colors.purple,
           colorScheme: ColorScheme(
             brightness: Brightness.light,
@@ -50,8 +51,8 @@ class MyApp extends StatelessWidget {
             onSurface: Colors.pinkAccent,
           ),
           fontFamily: 'Lato',
-        ), */
-        home: ProductsOverviewScreen(),
+        ),
+        home: AuthScreen(),
         routes: {
           ProductDetailScreen.routename: (ctx) => ProductDetailScreen(),
           CartScreen.routeName: (ctx) => CartScreen(),
