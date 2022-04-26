@@ -1,12 +1,14 @@
 import 'dart:convert';
-
+import 'package:hive_flutter/hive_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:shop_app/config/constants.dart';
 import 'package:shop_app/models/http_exception.dart';
 
 class Auth with ChangeNotifier {
   String? _token;
   DateTime? _expiryDate;
+
   late String _userId;
 
   bool get isAuth {
@@ -36,6 +38,7 @@ class Auth with ChangeNotifier {
           'returnSecureToken': true,
         }),
       );
+
       final responseData = json.decode(response.body);
       if (responseData['error'] != null) {
         throw HttpException(responseData['error']['message']);
@@ -49,6 +52,9 @@ class Auth with ChangeNotifier {
           ),
         ),
       );
+      var box = Hive.box(Constants.strorageBox);
+      box.put(Constants.token, _token);
+
       notifyListeners();
     } catch (error) {
       rethrow;

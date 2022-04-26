@@ -1,7 +1,10 @@
 import 'dart:convert';
+import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 import 'package:shop_app/models/http_exception.dart';
+import '../config/constants.dart';
 import 'product.dart';
 import 'package:http/http.dart' as http;
 
@@ -44,7 +47,7 @@ class Products with ChangeNotifier {
   // ignore: prefer_final_fields
   var _showFavoritesOnly = false;
 
-  List<Product> get items {
+  List<Product>? get items {
     // if (_showFavoritesOnly) {
     //   return _items.where((prodItem) => prodItem.isfavorite).toList();
     // }
@@ -70,8 +73,11 @@ class Products with ChangeNotifier {
   }
 
   Future<void> fetchAndSetProducts() async {
-    const url =
-        'https://shopapp-77183-default-rtdb.firebaseio.com/products.json';
+    var box = Hive.box(Constants.strorageBox);
+    String authToken = box.get(Constants.token);
+
+    final url =
+        'https://shopapp-77183-default-rtdb.firebaseio.com/products.json?auth=$authToken';
 
     try {
       final response = await http.get(Uri.parse(url));
@@ -97,8 +103,11 @@ class Products with ChangeNotifier {
   }
 
   Future<void> addProduct(Product product) async {
-    const url =
-        'https://shopapp-77183-default-rtdb.firebaseio.com/products.json';
+    var box = Hive.box(Constants.strorageBox);
+    String authToken = box.get(Constants.token);
+
+    final url =
+        'https://shopapp-77183-default-rtdb.firebaseio.com/products.json?auth=$authToken';
 
     try {
       final response = await http.post(
@@ -128,10 +137,13 @@ class Products with ChangeNotifier {
   }
 
   Future<void> updateProduct(String id, Product newProduct) async {
+    var box = Hive.box(Constants.strorageBox);
+    String authToken = box.get(Constants.token);
+
     final prodIndex = _items.indexWhere((prod) => prod.id == id);
     if (prodIndex >= 0) {
       final url =
-          'https://shopapp-77183-default-rtdb.firebaseio.com/products/$id.json';
+          'https://shopapp-77183-default-rtdb.firebaseio.com/products/$id.json?auth=$authToken';
       await http.patch(Uri.parse(url),
           body: json.encode({
             'title': newProduct.title,
@@ -147,8 +159,11 @@ class Products with ChangeNotifier {
   }
 
   Future<void> deleteProduct(String id) async {
+    var box = Hive.box(Constants.strorageBox);
+    String authToken = box.get(Constants.token);
+
     final url =
-        'https://shopapp-77183-default-rtdb.firebaseio.com/products/$id.json';
+        'https://shopapp-77183-default-rtdb.firebaseio.com/products/$id.json?auth=$authToken';
     final existingProdIndex = _items.indexWhere((prod) => prod.id == id);
     var existingProduct = _items[existingProdIndex];
     _items.removeAt(existingProdIndex);

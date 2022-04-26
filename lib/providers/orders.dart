@@ -1,7 +1,9 @@
 import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 import 'package:http/http.dart' as http;
+import '../config/constants.dart';
 import '../providers/cart.dart';
 
 class OrderItem {
@@ -26,7 +28,11 @@ class Orders with ChangeNotifier {
   }
 
   Future<void> fetchAndSetProducts() async {
-    const url = 'https://shopapp-77183-default-rtdb.firebaseio.com/orders.json';
+    var box = Hive.box(Constants.strorageBox);
+    String authToken = box.get(Constants.token);
+
+    final url =
+        'https://shopapp-77183-default-rtdb.firebaseio.com/orders.json?auth=$authToken';
 
     final response = await http.get(Uri.parse(url));
     final List<OrderItem> loadedOrders = [];
@@ -58,7 +64,10 @@ class Orders with ChangeNotifier {
   }
 
   Future<void> addOrder(List<CartItem> cartProducts, double total) async {
-    const url = 'https://shopapp-77183-default-rtdb.firebaseio.com/orders.json';
+    var box = Hive.box(Constants.strorageBox);
+    String authToken = box.get(Constants.token);
+    final url =
+        'https://shopapp-77183-default-rtdb.firebaseio.com/orders.json?auth=$authToken';
 
     final timeStamp = DateTime.now();
 

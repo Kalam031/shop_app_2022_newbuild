@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 import 'package:provider/provider.dart';
+import 'package:shop_app/config/constants.dart';
 import 'package:shop_app/providers/auth.dart';
 import 'package:shop_app/providers/orders.dart';
 import 'package:shop_app/screens/auth_screen.dart';
@@ -14,7 +16,10 @@ import './providers/products.dart';
 import './screens/product_detail_screen.dart';
 //import './screens/products_overview_screen.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Hive.initFlutter();
+  await Hive.openBox(Constants.strorageBox);
   runApp(MyApp());
 }
 
@@ -25,9 +30,9 @@ class MyApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(
-          create: (ctx) => Auth(),
+          create: (_) => Auth(),
         ),
-        ChangeNotifierProvider(
+        ChangeNotifierProvider<Products>(
           create: (ctx) => Products(),
         ),
         ChangeNotifierProvider(

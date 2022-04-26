@@ -34,11 +34,11 @@ class UserProductsScreen extends StatelessWidget {
           padding: EdgeInsets.all(8),
           child: ListView.builder(
             shrinkWrap: true,
-            itemCount: productsData.items.length,
+            itemCount: productsData.items!.length,
             itemBuilder: (_, i) => UserProductItem(
-              productsData.items[i].id,
-              productsData.items[i].title,
-              productsData.items[i].imageUrl,
+              productsData.items![i].id,
+              productsData.items![i].title,
+              productsData.items![i].imageUrl,
             ),
           ),
         ),
