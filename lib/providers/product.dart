@@ -23,7 +23,7 @@ class Product with ChangeNotifier {
     this.isfavorite = false,
   });
 
-  void toggleFavoriteStatus() async {
+  void toggleFavoriteStatus(String userId) async {
     var box = Hive.box(Constants.strorageBox);
     String authToken = box.get(Constants.token);
 
@@ -31,13 +31,13 @@ class Product with ChangeNotifier {
     isfavorite = !isfavorite;
     notifyListeners();
     final url =
-        'https://shopapp-77183-default-rtdb.firebaseio.com/products/$id.json?auth=$authToken';
+        'https://shopapp-77183-default-rtdb.firebaseio.com/userFavorites/$userId/$id.json?auth=$authToken';
     try {
-      final response = await http.patch(
+      final response = await http.put(
         Uri.parse(url),
-        body: json.encode({
-          'isFavorite': isfavorite,
-        }),
+        body: json.encode(
+          isfavorite,
+        ),
       );
 
       if (response.statusCode >= 400) {

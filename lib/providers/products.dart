@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
@@ -75,8 +74,9 @@ class Products with ChangeNotifier {
   Future<void> fetchAndSetProducts() async {
     var box = Hive.box(Constants.strorageBox);
     String authToken = box.get(Constants.token);
+    String userId = box.get(Constants.userId);
 
-    final url =
+    var url =
         'https://shopapp-77183-default-rtdb.firebaseio.com/products.json?auth=$authToken';
 
     try {
@@ -84,6 +84,14 @@ class Products with ChangeNotifier {
       final extractedData = json.decode(response.body) != null
           ? json.decode(response.body) as Map<String, dynamic>
           : null;
+
+      url =
+          'https://shopapp-77183-default-rtdb.firebaseio.com/userFavorites/$userId.json?auth=$authToken';
+
+      final favoriteResponse = await http.get(Uri.parse(url));
+
+      final favoriteStatus = json.decode(favoriteResponse.body);
+
       final List<Product> loadedProduct = [];
       extractedData?.forEach((prodId, prodData) {
         loadedProduct.add(Product(
@@ -92,7 +100,8 @@ class Products with ChangeNotifier {
           description: prodData['description'],
           price: prodData['price'],
           imageUrl: prodData['imageUrl'],
-          isfavorite: prodData['isFavorite'],
+          isfavorite:
+              favoriteStatus == null ? false : favoriteStatus[prodId] ?? false,
         ));
       });
       _items = loadedProduct;
@@ -118,7 +127,6 @@ class Products with ChangeNotifier {
             'price': product.price,
             'description': product.description,
             'imageUrl': product.imageUrl,
-            'isFavorite': product.isfavorite
           },
         ),
       );

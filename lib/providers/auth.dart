@@ -15,6 +15,10 @@ class Auth with ChangeNotifier {
     return token != null;
   }
 
+  String get userId {
+    return _userId;
+  }
+
   String? get token {
     if (_expiryDate != null &&
         _expiryDate!.isAfter(DateTime.now()) &&
@@ -54,6 +58,7 @@ class Auth with ChangeNotifier {
       );
       var box = Hive.box(Constants.strorageBox);
       box.put(Constants.token, _token);
+      box.put(Constants.userId, _userId);
 
       notifyListeners();
     } catch (error) {

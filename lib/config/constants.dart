@@ -3,4 +3,5 @@ class Constants {
 
   static const strorageBox = "appconfig";
   static const token = "authtoken";
+  static const userId = "userId";
 }
