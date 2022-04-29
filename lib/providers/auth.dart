@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:flutter/material.dart';
@@ -8,8 +9,8 @@ import 'package:shop_app/models/http_exception.dart';
 class Auth with ChangeNotifier {
   String? _token;
   DateTime? _expiryDate;
-
   late String _userId;
+  Timer? _authTimer;
 
   bool get isAuth {
     return token != null;
@@ -60,6 +61,7 @@ class Auth with ChangeNotifier {
       box.put(Constants.token, _token);
       box.put(Constants.userId, _userId);
 
+      autologout();
       notifyListeners();
     } catch (error) {
       rethrow;
@@ -78,6 +80,18 @@ class Auth with ChangeNotifier {
     _token = null;
     _userId = "";
     _expiryDate = null;
+    if (_authTimer != null) {
+      _authTimer!.cancel();
+      _authTimer = null;
+    }
     notifyListeners();
+  }
+
+  void autologout() {
+    if (_authTimer != null) {
+      _authTimer!.cancel();
+    }
+    final timetoExpiry = _expiryDate!.difference(DateTime.now()).inSeconds;
+    _authTimer = Timer(Duration(seconds: timetoExpiry), logout);
   }
 }
