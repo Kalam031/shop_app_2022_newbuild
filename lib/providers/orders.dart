@@ -27,12 +27,13 @@ class Orders with ChangeNotifier {
     return [..._orders];
   }
 
-  Future<void> fetchAndSetProducts() async {
+  Future<void> fetchAndSetOrders() async {
     var box = Hive.box(Constants.strorageBox);
     String authToken = box.get(Constants.token);
+    String userId = box.get(Constants.userId);
 
     final url =
-        'https://shopapp-77183-default-rtdb.firebaseio.com/orders.json?auth=$authToken';
+        'https://shopapp-77183-default-rtdb.firebaseio.com/orders/$userId.json?auth=$authToken';
 
     final response = await http.get(Uri.parse(url));
     final List<OrderItem> loadedOrders = [];
@@ -66,8 +67,10 @@ class Orders with ChangeNotifier {
   Future<void> addOrder(List<CartItem> cartProducts, double total) async {
     var box = Hive.box(Constants.strorageBox);
     String authToken = box.get(Constants.token);
+    String userId = box.get(Constants.userId);
+
     final url =
-        'https://shopapp-77183-default-rtdb.firebaseio.com/orders.json?auth=$authToken';
+        'https://shopapp-77183-default-rtdb.firebaseio.com/orders/$userId.json?auth=$authToken';
 
     final timeStamp = DateTime.now();
 

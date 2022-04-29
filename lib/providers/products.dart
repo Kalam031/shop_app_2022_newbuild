@@ -71,13 +71,16 @@ class Products with ChangeNotifier {
     return _items.firstWhere((prod) => prod.id == id);
   }
 
-  Future<void> fetchAndSetProducts() async {
+  Future<void> fetchAndSetProducts([bool filterByUser = false]) async {
     var box = Hive.box(Constants.strorageBox);
     String authToken = box.get(Constants.token);
     String userId = box.get(Constants.userId);
 
+    final String filterProducts =
+        filterByUser ? 'orderBy="creatorId"&equalTo="$userId"' : "";
+
     var url =
-        'https://shopapp-77183-default-rtdb.firebaseio.com/products.json?auth=$authToken';
+        'https://shopapp-77183-default-rtdb.firebaseio.com/products.json?auth=$authToken&$filterProducts';
 
     try {
       final response = await http.get(Uri.parse(url));
@@ -114,6 +117,7 @@ class Products with ChangeNotifier {
   Future<void> addProduct(Product product) async {
     var box = Hive.box(Constants.strorageBox);
     String authToken = box.get(Constants.token);
+    String userId = box.get(Constants.userId);
 
     final url =
         'https://shopapp-77183-default-rtdb.firebaseio.com/products.json?auth=$authToken';
@@ -127,6 +131,7 @@ class Products with ChangeNotifier {
             'price': product.price,
             'description': product.description,
             'imageUrl': product.imageUrl,
+            'creatorId': userId,
           },
         ),
       );
