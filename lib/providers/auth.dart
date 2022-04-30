@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:shop_app/config/constants.dart';
@@ -61,8 +62,16 @@ class Auth with ChangeNotifier {
       box.put(Constants.token, _token);
       box.put(Constants.userId, _userId);
 
-      autologout();
+      _autologout();
       notifyListeners();
+
+      final prefs = await SharedPreferences.getInstance();
+      final userData = json.encode({
+        'token': _token,
+        'userId': _userId,
+        'expiryDate': _expiryDate!.toIso8601String(),
+      });
+      prefs.setString('userData', userData);
     } catch (error) {
       rethrow;
     }
@@ -76,6 +85,28 @@ class Auth with ChangeNotifier {
     return _authenticate(email, password, 'signInWithPassword');
   }
 
+  Future<bool> tryAutoLogin() async {
+    final prefs = await SharedPreferences.getInstance();
+    if (!prefs.containsKey('userData')) {
+      return false;
+    }
+    final extractedUserData =
+        json.decode(prefs.getString('userData')!) as Map<String, Object>;
+    final expriryDate =
+        DateTime.parse(extractedUserData['expiryDate'] as String);
+
+    if (expriryDate.isBefore(DateTime.now())) {
+      return false;
+    }
+
+    _token = extractedUserData['token'] as String;
+    _userId = extractedUserData['userId'] as String;
+    _expiryDate = expriryDate;
+    notifyListeners();
+    _autologout();
+    return true;
+  }
+
   void logout() {
     _token = null;
     _userId = "";
@@ -87,7 +118,7 @@ class Auth with ChangeNotifier {
     notifyListeners();
   }
 
-  void autologout() {
+  void _autologout() {
     if (_authTimer != null) {
       _authTimer!.cancel();
     }
